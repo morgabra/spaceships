@@ -5,11 +5,11 @@ var Spaceship = require('./lib/spaceship').Spaceship;
 
 c = new Cosmos();
 
+var timeoutId;
+
 var tick = function() {
-  var timeoutId;
-  console.log('TICKING');
-  console.dir(c.ships);
-  timeoutId = setTimeout(c.tick.bind(c, tick), 1000);
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(c.tick.bind(c, tick), 100);
 };
 
 

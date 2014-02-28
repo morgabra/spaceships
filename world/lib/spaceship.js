@@ -11,7 +11,7 @@ var Spaceship = function(user, x, y, width, height, heading) {
   this.health = 100;
   this.log = [];
   this.type = 'spaceship';
-  this.viewDistance = 2000;
+  this.viewDistance = 100;
   this.name = user;
 
   SpaceObject.call(this, x, y, width, height);
@@ -19,7 +19,6 @@ var Spaceship = function(user, x, y, width, height, heading) {
 util.inherits(Spaceship, SpaceObject);
 
 Spaceship.prototype.tick = function(callback) {
-  console.log('TICKING SPACESHIP', this.name);
   this.tickLocation();
 
   this.lastTicked = Date.now();
@@ -34,6 +33,18 @@ Spaceship.prototype.tickLocation = function() {
   x = this.x + Math.cos(this.heading) * distance;
   y = this.y + Math.sin(this.heading) * distance;
 
+  if (x < -320) {
+    x = 320;
+  } else if (x > 320) {
+    x = -320;
+  }
+
+  if (y < -240) {
+    y = 240;
+  } else if (y > 240) {
+    y = -240;
+  }
+
   this.setLocation(x, y);
 };
 
@@ -45,7 +56,7 @@ Spaceship.prototype.update = function(event) {
 };
 
 Spaceship.prototype.getSpeed = function() {
-  return this.throttle;
+  return this.throttle / 1000;
 };
 
 Spaceship.prototype.create = function(callback) {

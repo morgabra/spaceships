@@ -28,8 +28,8 @@ util.inherits(Cosmos, EventEmitter);
 
 Cosmos.prototype.getRandomLocation = function() {
   return {
-    x: Math.random() * 600 - 300,
-    y: Math.random() * 600 - 300
+    x: Math.random() * 320 - 320,
+    y: Math.random() * 240 - 240
   };
 };
 
@@ -43,8 +43,6 @@ Cosmos.prototype.redisEvent = function(pattern, channel, message) {
     self.createShip(user);
   } else if (eventType === 'update') {
     self.ships[user].update(message);
-  } else {
-    console.log(message);
   }
 };
 
@@ -82,8 +80,6 @@ Cosmos.prototype.insert = function(spaceObj, callback) {
 Cosmos.prototype.tick = function(callback) {
   var self = this;
 
-  console.log('TICK IN COSMOS');
-
   async.eachLimit(Object.keys(this.objects), 500, function(spaceObjKey, callback) {
     var spaceObj = self.objects[spaceObjKey];
 
@@ -98,7 +94,8 @@ Cosmos.prototype.tick = function(callback) {
         self.updateObjectLocation(spaceObj, callback);
       }
     ], function(err) {
-      var chan;
+      var chan,
+          box;
 
       if (err) {
         self.emit('error', err);
@@ -106,17 +103,22 @@ Cosmos.prototype.tick = function(callback) {
         return;
       }
 
-      console.log('Finished tick');
-
       self.lastTicked = Date.now();
 
       chan = ['tick', spaceObj.name].join(':');
-      self.redisPubClient.publish(chan, JSON.stringify(spaceObj));
+      box = spaceObj.getViewBox();
+      self.redisPubClient.publish(
+        chan,
+        JSON.stringify(self.search(box.x, box.y, box.w, box.h))
+      );
 
       self.emit('tick', self.lastTicked);
       callback();
     });
-  }, callback);
+  }, function() {
+    console.log('Finished ticking.', Date.now());
+    callback();
+  });
 };
 
 Cosmos.prototype.search = function(x, y, width, height) {
@@ -137,7 +139,6 @@ Cosmos.prototype.remove = function(spaceObj, callback) {
 Cosmos.prototype.updateObjectLocation = function(spaceObj, callback) {
   var self = this;
 
-  console.log('UPDATING LOCATION', spaceObj.name);
 
   async.series([
     self.remove.bind(self, spaceObj),

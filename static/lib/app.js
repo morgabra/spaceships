@@ -2,6 +2,8 @@ var framerate;
 var canvas;
 var graphics;
 var shipImage;
+var tickData = {ship: null};// is updated by the socketio stuff below
+
 // Data received here looks something like this:
 var testData = [
   {
@@ -84,15 +86,20 @@ function render(graphics) {
     // draw my ship
     // loop over other ships and draw them
     // cyan text
-    drawShip(graphics, me, shipImage, "rgba(0, 255, 255, 1.0)");
+    drawShip(graphics, tickData.ship, shipImage, "rgba(0, 255, 255, 1.0)");
+    /*
     for (var i = 0; i < me.scanners.length; i++) {
         var eachShip = me.scanners[i];
         // white text
         drawShip(graphics, eachShip, shipImage, "rgba(255, 255, 255, 1.0)");
     }
+    */
 }
 
 function drawShip(graphics, shipObj, image, textRgba) {
+    if (shipObj === null) {
+        return;
+    }
     var shipWidth = 64;
     var shipHeight = 64;
 
@@ -117,8 +124,17 @@ $( document ).ready( function () {
     var socket = io.connect('http://localhost');
 
     socket.on('data', function (data) {
+        // TODO(larsbutler): need to get a list of stuff here
         console.log(data.data);
-        console.log($('#shipstatus'));
+        if (data.data == "Connected!") {
+            // Cool, we're connected
+            // But this isn't json
+            return;
+        }
+        // We got ship data
+        tickData.ship = JSON.parse(data.data);
+
+        // console.log($('#shipstatus'));
         $('#shipstatus').html(data.data);
         socket.emit('data', { my: 'data' });
     });

@@ -12,10 +12,18 @@ var tick = function() {
   timeoutId = setTimeout(c.tick.bind(c, tick), 100);
 };
 
+async.series([
+  function createPlanet(callback) {
+    async.times(25, function(planet, callback) {
+      c.createPlanet(callback);
+    }, callback);
+  },
 
-async.timesSeries(100, function(user, callback) {
-  c.createShip(user, callback);
-}, function() {
-  c.tick(tick);
-});
+  function createShips(callback) {
+    async.times(100, function(user, callback) {
+      c.createShip(user, callback);
+    }, callback);
+  }], function() {
+    c.tick(tick);
+  });
 

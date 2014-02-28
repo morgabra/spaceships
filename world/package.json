@@ -1,0 +1,23 @@
+{
+  "name": "spaceships-world",
+  "version": "0.0.0",
+  "description": "The world server for spaceships",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com:morgabra/spaceships.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/morgabra/spaceships/issues"
+  },
+  "dependencies": {
+    "async": "~0.2.10",
+    "underscore": "~1.6.0",
+    "rtree": "~1.4.0"
+  }
+}

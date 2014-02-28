@@ -1,8 +1,17 @@
+var framerate;
+var canvas;
+var graphics;
+var ship;
+
 function main() {
-    var framerate = new Framerate("framerate-monitor");
-    var canvas = document.getElementById("gamecanvas");
-    var graphics = canvas.getContext("2d");
-    var ship = new Image();
+    framerate = new Framerate("framerate-monitor");
+    canvas = document.getElementById("gamecanvas");
+    graphics = canvas.getContext("2d");
+    // FIXME(larsbutler): this is a hack because the canvas is stretched,
+    // and I don't know why
+    graphics.scale(1.0, 0.7);
+
+    ship = new Image();
     ship.src = "media/ObjectSpaceship.png";
 
     var gameLoop = function() {

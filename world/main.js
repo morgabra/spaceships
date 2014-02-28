@@ -9,12 +9,12 @@ var timeoutId;
 
 var tick = function() {
   clearTimeout(timeoutId);
-  timeoutId = setTimeout(c.tick.bind(c, tick), 100);
+  timeoutId = setTimeout(c.tick.bind(c, tick), 500);
 };
 
 async.series([
   function createPlanet(callback) {
-    async.times(25, function(planet, callback) {
+    async.times(10, function(planet, callback) {
       c.createPlanet(callback);
     }, callback);
   },

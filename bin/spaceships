@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+var optimist = require('optimist');
+var _ = require('underscore');
+var winston = require('winston');
+var path = require('path');
+
+var App = require('../lib/app');
+
+function main () {
+  var argv, config, port, app;
+
+  optimist = optimist.usage('Usage: $0 -c [/path/to/settings.js] --logfile [logmagic sink]');
+  optimist = optimist['default']('c', __dirname + '/../local_settings');
+  optimist = optimist['default']('logfile', '__dirname/../logs/server.log');
+  argv = optimist.argv;
+
+  winston.add(winston.transports.File, { filename: argv.logfile });
+
+  config = require(path.resolve(argv.c));
+  app = new App(config);
+  app.start();
+}
+
+main();

@@ -4,9 +4,18 @@ var config = {
 
   listen_port: 3000,
 
+  git: {
+    dir: 'ships'
+  },
+
   github: {
     id: 'bba70812257735390d7a',
     secret: '2efad22faba7d1c0986e50c928299753563f8d83'
+  },
+
+  redis: {
+    host: 'localhost',
+    port: 6379
   },
 
   db: {

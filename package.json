@@ -16,6 +16,7 @@
     "socket.io": "0.9.16",
     "passport.socketio": "2.2.0",
     "connect-mongo": "0.4.0",
-    "passport-github": "0.1.5"
+    "passport-github": "0.1.5",
+    "redis": "0.10.1"
   }
 }

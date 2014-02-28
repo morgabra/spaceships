@@ -5,7 +5,7 @@ var async = require('async');
 var redis = require('redis');
 var RTree = require('rtree');
 
-var config = require(__dirname + '/../../local_settings').config;
+var config = require('../../local_settings');
 var Spaceship = require('./spaceship').Spaceship;
 
 
@@ -15,9 +15,10 @@ var Cosmos = function() {
   this.objects = {};
   this.ships = {};
   this.lastTicked = 0;
-  this.redisClient = redis.createClient(conf.redis.port, conf.redis.host);
 
-  this.redisClient.on('pmessage', self.redisEvent.bind(self));
+  this.redisClient = redis.createClient(config.redis.port, config.redis.host);
+
+  this.redisClient.on('pmessage', this.redisEvent.bind(this));
   this.redisClient.psubscribe(config.redis.prefix + 'api:*:*');
 
   EventEmitter.call(this);
@@ -26,8 +27,8 @@ util.inherits(Cosmos, EventEmitter);
 
 Cosmos.prototype.getRandomLocation = function() {
   return {
-    x: Math.random() * 20000 - 10000,
-    y: Math.random() * 20000 - 10000
+    x: Math.random() * 600 - 300,
+    y: Math.random() * 600 - 300
   };
 };
 
@@ -44,14 +45,17 @@ Cosmos.prototype.redisEvent = function(pattern, channel, message) {
   }
 };
 
-Cosmos.prototype.createShip = function(user) {
-  var location = self.getRandomLocation(),
+Cosmos.prototype.createShip = function(user, callback) {
+  var self = this,
+      location = this.getRandomLocation(),
       ship;
 
   ship = new Spaceship(user, location.x, location.y, 1, 1);
+  console.dir(ship);
   this.ships[user] = ship;
   self.insert(ship, function() {
     self.emit('created-ship', ship);
+    callback();
   });
 };
 
@@ -88,20 +92,21 @@ Cosmos.prototype.tick = function(callback) {
         self.update(spaceObj, callback);
       }
     ], function(err) {
-    if (err) {
-      self.emit('error', err);
+      if (err) {
+        self.emit('error', err);
+        callback();
+        return;
+      }
+
+      self.lastTicked = Date.now();
+
+      self.emit('tick', self.lastTicked);
       callback();
-      return;
-    }
-
-    self.lastTicked = Date.now();
-
-    self.emit('tick', self.lastTicked);
-    callback();
+    });
   });
 };
 
-Cosmos.prototype.search = function(x, y, width, height, callback) {
+Cosmos.prototype.search = function(x, y, width, height) {
   return this.cosmos.search({x: x, y: y, w: width, h: height});
 };
 

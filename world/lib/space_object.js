@@ -2,7 +2,7 @@ var util = require('util');
 var uuid = require('node-uuid');
 
 
-var SpaceObject = function(user, x, y, width, height) {
+var SpaceObject = function(x, y, width, height) {
   this.x = x;
   this.y = y;
   this.width = width;
@@ -22,6 +22,10 @@ SpaceObject.prototype.getLocation = function() {
 SpaceObject.prototype.setLocation = function(x, y) {
   this.x = x;
   this.y = y;
+};
+
+SpaceObject.prototype.create = function(callback) {
+  callback();
 };
 
 SpaceObject.prototype.getBounds = function() {

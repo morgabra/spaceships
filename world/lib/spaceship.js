@@ -11,9 +11,10 @@ var Spaceship = function(user, x, y, width, height, heading) {
   this.health = 100;
   this.log = [];
   this.type = 'spaceship';
-  this.viewDistance = 100;
+  this.viewDistance = 2000;
+  this.name = user;
 
-  SpaceObject.call(this);
+  SpaceObject.call(this, x, y, width, height);
 };
 util.inherits(Spaceship, SpaceObject);
 
@@ -46,11 +47,15 @@ Spaceship.prototype.getSpeed = function() {
   return this.throttle;
 };
 
+Spaceship.prototype.create = function(callback) {
+  callback();
+};
+
 Spaceship.prototype.getViewBox = function() {
   var bounds = {};
 
-  bounds.w = this.width;
-  bounds.h = this.height;
+  bounds.w = this.viewDistance;
+  bounds.h = this.viewDistance;
   bounds.x = this.x - (this.viewDistance / 2);
   bounds.y = this.y - (this.viewDistance / 2);
 

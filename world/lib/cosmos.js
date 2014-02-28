@@ -36,7 +36,7 @@ Cosmos.prototype.getRandomLocation = function() {
 Cosmos.prototype.createPlanet = function(callback) {
   var self = this,
       location = this.getRandomLocation(),
-      radius = Math.random() * 25,
+      radius = Math.random() * 25 + 1,
       planet;
 
   planet = new Planet(location.x, location.y, radius);
@@ -53,7 +53,9 @@ Cosmos.prototype.redisEvent = function(pattern, channel, message) {
       user = chanInfo[1];
 
   if (eventType === 'created') {
-    self.createShip(user);
+    self.createShip(user, function() {
+      console.log('Created ship for', user);
+    });
   } else if (eventType === 'result') {
     self.ships[user].update(message);
   }

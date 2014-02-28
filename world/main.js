@@ -17,13 +17,7 @@ async.series([
     async.times(10, function(planet, callback) {
       c.createPlanet(callback);
     }, callback);
-  },
-
-  function createShips(callback) {
-    async.times(5, function(user, callback) {
-      c.createShip(user, callback);
-    }, callback);
-  }], function() {
+  }
+], function() {
     c.tick(tick);
-  });
-
+});

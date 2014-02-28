@@ -49,7 +49,11 @@ Spaceship.prototype.tickLocation = function() {
 };
 
 Spaceship.prototype.update = function(event) {
-  event = JSON.parse(event.toString());
+  event = event.toString();
+  if (!event) {
+    return;
+  }
+  event = JSON.parse(event);
 
   this.throttle = event.throttle || this.throttle;
   this.heading = event.heading || this.heading;

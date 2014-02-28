@@ -20,7 +20,7 @@ async.series([
   },
 
   function createShips(callback) {
-    async.times(100, function(user, callback) {
+    async.times(5, function(user, callback) {
       c.createShip(user, callback);
     }, callback);
   }], function() {

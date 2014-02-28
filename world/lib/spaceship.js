@@ -11,7 +11,7 @@ var Spaceship = function(user, x, y, width, height, heading) {
   this.health = 100;
   this.log = [];
   this.type = 'spaceship';
-  this.viewDistance = 100;
+  this.viewDistance = 250;
   this.name = user;
 
   SpaceObject.call(this, x, y, width, height);
@@ -56,7 +56,7 @@ Spaceship.prototype.update = function(event) {
 };
 
 Spaceship.prototype.getSpeed = function() {
-  return this.throttle / 1000;
+  return this.throttle / 100;
 };
 
 Spaceship.prototype.create = function(callback) {

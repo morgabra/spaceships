@@ -10,10 +10,18 @@ html(lang="en")
 
     script(src='/socket.io/socket.io.js')
     script(src='/lib/app.js')
+    script(src='/lib/J3DI.js')
 
     link(rel='stylesheet', href='/css/base.css')
     link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
     link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css')
+
+    style
+        #gamecanvas {
+            background-color: #000000;
+            width: 640px;
+            height: 480px;
+        }
 
   body
     .navbar.navbar-default.navbar-fixed-top(role='navigation')
@@ -37,6 +45,8 @@ html(lang="en")
     .container
       .page-header
         h1= "Ship Status"
+        #framerate-monitor
+        canvas#gamecanvas
         p= "Status of the Ship?"
 
     #shipstatus.container

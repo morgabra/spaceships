@@ -37,7 +37,7 @@ Cosmos.prototype.redisEvent = function(pattern, channel, message) {
   var self = this,
       chanInfo = channel.split(':'),
       eventType = chanInfo[chanInfo.length - 1],
-      user = chanInfo[2];
+      user = chanInfo[1];
 
   if (eventType === 'created') {
     self.createShip(user);

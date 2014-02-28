@@ -20,6 +20,6 @@
     "underscore": "~1.6.0",
     "rtree": "~1.4.0",
     "redis": "~0.10.1",
-    "node-uuid": "~1.4.1"
+    "node-uuid": "^1.4.1"
   }
 }

@@ -2,6 +2,8 @@ function main() {
     var framerate = new Framerate("framerate-monitor");
     var canvas = document.getElementById("gamecanvas");
     var graphics = canvas.getContext("2d");
+    var ship = new Image();
+    ship.src = "media/ObjectSpaceship.png";
 
     var gameLoop = function() {
         update();
@@ -9,10 +11,8 @@ function main() {
         graphics.fillStyle = "rgba(0, 0, 0, 1.0)";
         graphics.clearRect(0, 0, canvas.width, canvas.height);
         graphics.fillStyle = "rgba(240, 150, 10, 1.0)";
-        // graphics.fillRect(testData[0].x, 10, 8, 8);
+        graphics.drawImage(ship, 16, 16);
         graphics.fillStyle = "rgba(0, 0, 150, 1.0)";
-        // graphics.fillRect(testData[0].scanners[0].x, testData[0].scanners[0].y, 11, 11);
-        // graphics.fillRect(testData[0].scanners[1].x, testData[0].scanners[1].y, 11, 11);
         framerate.snapshot();
         window.requestAnimationFrame(gameLoop);
     };

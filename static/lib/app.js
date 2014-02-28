@@ -62,7 +62,15 @@ function drawSpaceObject(graphics, obj, textRgba) {
     graphics.save();
     graphics.translate(obj.x, obj.y);
     graphics.rotate(obj.heading * Math.PI/180);
-    graphics.drawImage(image, -image.width/2, -image.width/2);
+    if (obj.type == "planet") {
+        var radius = obj.radius;
+        var scale = radius / 25;
+        graphics.drawImage(image, -image.width/2, -image.width/2,
+                           image.width * scale, image.height * scale);
+    }
+    else {
+        graphics.drawImage(image, -image.width/2, -image.width/2);
+    }
     graphics.restore();
     graphics.fillStyle = textRgba;
     graphics.fillText(obj.name, obj.x - 32, obj.y + 32);

@@ -9,8 +9,7 @@ var Listener = function() {
 Listener.prototype.listen = function() {
   this.redis.on('pmessage', this.handle);
 
-  this.redis.psubscribe('*:api');
-  console.log('subscribed');
+  this.redis.psubscribe('api:*');
 };
 
 Listener.prototype.handle = function(subChannel, channel, data) {

@@ -2,7 +2,9 @@ var framerate;
 var canvas;
 var graphics;
 var shipImage;
-var tickData = {ships: null};// is updated by the socketio stuff below
+var planetImage;
+var tickData = null;
+var tickDataBuffer = null;
 var tickCounter = 0;
 
 
@@ -13,9 +15,10 @@ function main() {
 
     shipImage = new Image();
     shipImage.src = "media/ObjectSpaceship.png";
+    planetImage = new Image();
+    planetImage.src = "media/planet.png";
 
     var gameLoop = function() {
-        // Time?
         update();
         render(graphics);
         framerate.snapshot();
@@ -27,12 +30,7 @@ function main() {
 }
 
 function render(graphics) {
-    // Clear
-
-    // draw my ship
-    // loop over other ships and draw them
-    // cyan text
-    if (tickData.ships === null) {
+    if (tickDataBuffer === null) {
         return;
     }
 
@@ -40,25 +38,34 @@ function render(graphics) {
         graphics.fillStyle = "rgba(0, 0, 0, 1.0)";
         graphics.clearRect(0, 0, canvas.width, canvas.height);
     }
-    for (var i = 0; i < tickData.ships.length; i++) {
-        drawShip(graphics, tickData.ships[i], shipImage, "rgba(0, 255, 255, 1.0)");
+    // swap buffer
+    tickData = tickDataBuffer;
+    for (var i = 0; i < tickData.stuff.length; i++) {
+        drawSpaceObject(graphics, tickData.stuff[i], "rgba(0, 255, 255, 1.0)");
     }
 }
 
-function drawShip(graphics, shipObj, image, textRgba) {
-    if (shipObj === null) {
+function drawSpaceObject(graphics, obj, textRgba) {
+    if (obj === null) {
         return;
+    }
+    var image;
+    if (obj.type == "spaceship") {
+        image = shipImage;
+    }
+    else if (obj.type == "planet") {
+        image = planetImage;
     }
     var shipWidth = 64;
     var shipHeight = 64;
 
     graphics.save();
-    graphics.translate(shipObj.x, shipObj.y);
-    graphics.rotate(shipObj.heading * Math.PI/180);
+    graphics.translate(obj.x, obj.y);
+    graphics.rotate(obj.heading * Math.PI/180);
     graphics.drawImage(image, -image.width/2, -image.width/2);
     graphics.restore();
     graphics.fillStyle = textRgba;
-    graphics.fillText(shipObj.name, shipObj.x - 32, shipObj.y + 32);
+    graphics.fillText(obj.name, obj.x - 32, obj.y + 32);
 }
 
 
@@ -67,11 +74,6 @@ function update() {
     tickCounter++;
     if (tickCounter > 10) {
         tickCounter = 0;
-    }
-
-    // HACK: translate the origin from top left to center
-    if (tickData.ships === null) {
-        return;
     }
 }
 
@@ -88,11 +90,12 @@ $( document ).ready( function () {
             return;
         }
         // We got ship data
-        tickData.ships = JSON.parse(data.data);
-        for (var i = 0; i < tickData.ships.length; i++) {
-            var ship = tickData.ships[i];
-            ship.x += 320;
-            ship.y += 240;
+        tickDataBuffer = {stuff: JSON.parse(data.data)};
+        // translate coords
+        for (var i = 0; i < tickDataBuffer.stuff.length; i++) {
+            var obj = tickDataBuffer.stuff[i];
+            obj.x += 320;
+            obj.y += 240;
         }
 
 

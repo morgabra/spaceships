@@ -9,6 +9,7 @@ var SpaceObject = function(user, x, y, width, height) {
   this.height = height;
   this.id = uuid.v4();
   this.type = 'spaceobject';
+  this.lastTicked = 0;
 };
 
 SpaceObject.prototype.getLocation = function() {
@@ -32,6 +33,14 @@ SpaceObject.prototype.getBounds = function() {
   bounds.y = this.y - (this.height / 2);
 
   return bounds;
+};
+
+SpaceObject.prototype.tick = function(callback) {
+  this.lastTicked = Date.now();
+  callback();
+};
+
+SpaceObject.prototype.update = function(event) {
 };
 
 SpaceObject.prototype.getDistance = function(target) {

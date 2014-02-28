@@ -3,7 +3,7 @@ var util = require('util');
 var SpaceObject = require('./space_object').SpaceObject;
 
 var Spaceship = function(user, x, y, width, height, heading) {
-  this.heading = heading;
+  this.heading = 0;
   this.throttle = 0;
   this.engineTemperature = 0;
   this.power = 100;
@@ -17,8 +17,33 @@ var Spaceship = function(user, x, y, width, height, heading) {
 };
 util.inherits(Spaceship, SpaceObject);
 
-Spaceship.prototype.update = function(callback) {
+Spaceship.prototype.tick = function(callback) {
+  this.tickLocation();
+
+  this.lastTicked = Date.now();
   callback();
+};
+
+Spaceship.prototype.tickLocation = function() {
+  var speed = this.getSpeed(),
+      delta = (Date.now() - this.lastTicked) / 1000, // delta in seconds
+      distance = speed / delta;
+
+  x = this.x + Math.cos(this.heading) * distance;
+  y = this.y + Math.sin(this.heading) * distance;
+
+  this.setLocation(x, y);
+};
+
+Spaceship.prototype.update = function(event) {
+  event = JSON.parse(event.toString());
+
+  this.throttle = event.throttle || this.throttle;
+  this.heading = event.heading || this.heading;
+};
+
+Spaceship.prototype.getSpeed = function() {
+  return this.throttle;
 };
 
 Spaceship.prototype.getViewBox = function() {
@@ -36,8 +61,8 @@ Spaceship.prototype.getDirection = function(target) {
   var angle, x, y;
 
   // Translate the target location as if the ship was the origin
-  x = target.x - source.x;
-  y = target.y - source.y;
+  x = target.x - this.x;
+  y = target.y - this.y;
 
   // The target is on the same spot as the ship
   if (x === 0 && y === 0) {
@@ -57,10 +82,10 @@ Spaceship.prototype.getDirection = function(target) {
   }
 
   // Take the ship heading into account
-  if (angle >= source.heading) {
-    return angle - source.heading;
+  if (angle >= this.heading) {
+    return angle - this.heading;
   } else {
-    return 360 - source.heading + angle;
+    return 360 - this.heading + angle;
   }
 };
 

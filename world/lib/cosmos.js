@@ -13,10 +13,12 @@ var Spaceship = require('./spaceship').Spaceship;
 var Cosmos = function() {
   this.cosmos = new RTree();
   this.objects = {};
+  this.ships = {};
+  this.lastTicked = 0;
   this.redisClient = redis.createClient(conf.redis.port, conf.redis.host);
 
-  this.redisClient.on('pmessage', self.createShip.bind(self));
-  this.redisClient.psubscribe(config.redis.prefix + 'api:*:created');
+  this.redisClient.on('pmessage', self.redisEvent.bind(self));
+  this.redisClient.psubscribe(config.redis.prefix + 'api:*:*');
 
   EventEmitter.call(this);
 };
@@ -29,14 +31,25 @@ Cosmos.prototype.getRandomLocation = function() {
   };
 };
 
-Cosmos.prototype.createShip = function(pattern, channel, message) {
+Cosmos.prototype.redisEvent = function(pattern, channel, message) {
   var self = this,
-      messageInfo = channel.split(':'),
-      user = messageInfo[2],
-      location = self.getRandomLocation(),
+      chanInfo = channel.split(':'),
+      eventType = chanInfo[chanInfo.length - 1],
+      user = chanInfo[2];
+
+  if (eventType === 'created') {
+    self.createShip(user);
+  } else if (eventType === 'update') {
+    self.ships[user].update(message);
+  }
+};
+
+Cosmos.prototype.createShip = function(user) {
+  var location = self.getRandomLocation(),
       ship;
 
   ship = new Spaceship(user, location.x, location.y, 1, 1);
+  this.ships[user] = ship;
   self.insert(ship, function() {
     self.emit('created-ship', ship);
   });
@@ -64,15 +77,26 @@ Cosmos.prototype.tick = function(callback) {
   var self = this;
 
   async.eachLimit(Object.keys(this.objects), 500, function(spaceObj, callback) {
-    spaceObj.update(callback);
-  }, function(err) {
+    async.series([
+      // Tick each space object
+      function tickSpaceObj(callback) {
+        spaceObj.tick(callback)
+      },
+
+      // Update world location of each space object
+      function updateSpaceObjInCosmos(callback) {
+        self.update(spaceObj, callback);
+      }
+    ], function(err) {
     if (err) {
       self.emit('error', err);
       callback();
       return;
     }
 
-    self.emit('tick');
+    self.lastTicked = Date.now();
+
+    self.emit('tick', self.lastTicked);
     callback();
   });
 };

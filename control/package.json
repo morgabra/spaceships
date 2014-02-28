@@ -16,8 +16,6 @@
     "url": "https://github.com/morgabra/spaceships/issues"
   },
   "dependencies": {
-    "async": "~0.2.10",
-    "underscore": "~1.6.0",
-    "rtree": "~1.4.0"
+    "redis": "~0.10.1"
   }
 }

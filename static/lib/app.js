@@ -78,7 +78,7 @@ function update() {
 
 $( document ).ready( function () {
     main();
-    var socket = io.connect('http://localhost');
+    var socket = io.connect('http://spaceships.mirwin.net');
 
     socket.on('data', function (data) {
         // TODO(larsbutler): need to get a list of stuff here

@@ -63,8 +63,10 @@ Listener.prototype.doBulkTick = function() {
     var shellCommand = 'zvsh --zvm-image /home/vagrant/tarball/python.tar python @' + firmware + ' ' + dataArg;
     var that = this;
     var child = exec(shellCommand, function(error, stdout, stderr) {
-      if (error) {
+      if (error || stderr) {
         // handle it
+        console.log('error: ' + error);
+        console.log('stderr: ' + stderr);
       }
 
       var pubChannel = 'api:' + username + ':result';

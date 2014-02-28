@@ -28,6 +28,10 @@ SpaceObject.prototype.create = function(callback) {
   callback();
 };
 
+SpaceObject.prototype.remove = function(callback) {
+  callback();
+};
+
 SpaceObject.prototype.getBounds = function() {
   var bounds = {};
 

@@ -51,7 +51,6 @@ Cosmos.prototype.createShip = function(user, callback) {
       ship;
 
   ship = new Spaceship(user, location.x, location.y, 1, 1);
-  console.dir(ship);
   this.ships[user] = ship;
   self.insert(ship, function() {
     self.emit('created-ship', ship);
@@ -80,7 +79,11 @@ Cosmos.prototype.insert = function(spaceObj, callback) {
 Cosmos.prototype.tick = function(callback) {
   var self = this;
 
-  async.eachLimit(Object.keys(this.objects), 500, function(spaceObj, callback) {
+  console.log('TICK IN COSMOS');
+
+  async.eachLimit(Object.keys(this.objects), 500, function(spaceObjKey, callback) {
+    var spaceObj = self.objects[spaceObjKey];
+
     async.series([
       // Tick each space object
       function tickSpaceObj(callback) {
@@ -89,7 +92,7 @@ Cosmos.prototype.tick = function(callback) {
 
       // Update world location of each space object
       function updateSpaceObjInCosmos(callback) {
-        self.update(spaceObj, callback);
+        self.updateObjectLocation(spaceObj, callback);
       }
     ], function(err) {
       if (err) {
@@ -98,12 +101,14 @@ Cosmos.prototype.tick = function(callback) {
         return;
       }
 
+      console.log('Finished tick');
+
       self.lastTicked = Date.now();
 
       self.emit('tick', self.lastTicked);
       callback();
     });
-  });
+  }, callback);
 };
 
 Cosmos.prototype.search = function(x, y, width, height) {
@@ -111,6 +116,8 @@ Cosmos.prototype.search = function(x, y, width, height) {
 };
 
 Cosmos.prototype.remove = function(spaceObj, callback) {
+  var self = this;
+
   spaceObj.remove(function(err) {
     self.cosmos.remove(spaceObj.getBounds(), spaceObj);
     delete self.objects[spaceObj.id];
@@ -119,8 +126,10 @@ Cosmos.prototype.remove = function(spaceObj, callback) {
   });
 };
 
-Cosmos.prototype.update = function(spaceObj, callback) {
+Cosmos.prototype.updateObjectLocation = function(spaceObj, callback) {
   var self = this;
+
+  console.log('UPDATING LOCATION', spaceObj.name);
 
   async.series([
     self.remove.bind(self, spaceObj),

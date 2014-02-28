@@ -3,8 +3,8 @@ var util = require('util');
 var SpaceObject = require('./space_object').SpaceObject;
 
 var Spaceship = function(user, x, y, width, height, heading) {
-  this.heading = 0;
-  this.throttle = 0;
+  this.heading = Math.random() * 360;
+  this.throttle = 100;
   this.engineTemperature = 0;
   this.power = 100;
   this.shield = 100;
@@ -19,6 +19,7 @@ var Spaceship = function(user, x, y, width, height, heading) {
 util.inherits(Spaceship, SpaceObject);
 
 Spaceship.prototype.tick = function(callback) {
+  console.log('TICKING SPACESHIP', this.name);
   this.tickLocation();
 
   this.lastTicked = Date.now();
@@ -48,6 +49,10 @@ Spaceship.prototype.getSpeed = function() {
 };
 
 Spaceship.prototype.create = function(callback) {
+  callback();
+};
+
+Spaceship.prototype.remove = function(callback) {
   callback();
 };
 

@@ -8,6 +8,7 @@ var SpaceObject = function(user, x, y, width, height) {
   this.width = width;
   this.height = height;
   this.id = uuid.v4();
+  this.type = 'spaceobject';
 };
 
 SpaceObject.prototype.getLocation = function() {
@@ -15,6 +16,11 @@ SpaceObject.prototype.getLocation = function() {
     x: this.x,
     y: this.y
   };
+};
+
+SpaceObject.prototype.setLocation = function(x, y) {
+  this.x = x;
+  this.y = y;
 };
 
 SpaceObject.prototype.getBounds = function() {
@@ -28,5 +34,8 @@ SpaceObject.prototype.getBounds = function() {
   return bounds;
 };
 
+SpaceObject.prototype.getDistance = function(target) {
+  return Math.sqrt(Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2));
+};
 
 exports.SpaceObject = SpaceObject;

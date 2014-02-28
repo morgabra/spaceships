@@ -1,0 +1,88 @@
+[
+  {
+    x: 12, // coord
+    y: 123, // coord
+    course: 10, //degrees
+    speed: 100 // units/second
+    scanners: [
+      // list of objects within view
+      {
+        name: 'zeries120',
+        distance: 800, // units
+        direction: 98, // degrees from 0 on the coord plane
+        type: 'planet',
+        size: 78 // area of bounding box
+      },
+      {
+        name: 'jirwin',
+        distance: 800, // units
+        direction: 98, // degrees from 0 on the coord plane
+        type: 'ship',
+        shield: 65, // percentage of shield charge,
+        health: 100, // hit points
+        size: 1 // area of bounding box
+      }
+    ],
+    sensors: {
+      engineTemperature: 900, // unbounded int
+      power: 80, // 0-100
+      shield: 99, // 0-100
+      throttle: 29, // 0-100
+    },
+    log: [
+      {
+        'type': 'combat',
+        'message': 'You were hit for 6 damage',
+        'timestamp': 213908210823 // timestamp in milliseconds
+      },
+      {
+        'type': 'combat',
+        'message': 'You were hit for 6 damage',
+        'timestamp': 213908210823 // timestamp in milliseconds
+      }
+    ]
+  },
+  {
+    x: 12, // coord
+    y: 123, // coord
+    course: 10, //degrees
+    speed: 100 // units/second
+    scanners: [
+      // list of objects within view
+      {
+        name: 'zeries120',
+        distance: 800, // units
+        direction: 98, // degrees from 0 on the coord plane
+        type: 'planet',
+        size: 78 // area of bounding box
+      },
+      {
+        name: 'jirwin',
+        distance: 800, // units
+        direction: 98, // degrees from 0 on the coord plane
+        type: 'ship',
+        shield: 65, // percentage of shield charge,
+        health: 100, // hit points
+        size: 1 // area of bounding box
+      }
+    ],
+    sensors: {
+      engineTemperature: 900, // unbounded int
+      power: 80, // 0-100
+      shield: 99, // 0-100
+      throttle: 29, // 0-100
+    },
+    log: [
+      {
+        'type': 'combat',
+        'message': 'You were hit for 6 damage',
+        'timestamp': 213908210823 // timestamp in milliseconds
+      },
+      {
+        'type': 'combat',
+        'message': 'You were hit for 6 damage',
+        'timestamp': 213908210823 // timestamp in milliseconds
+      }
+    ]
+  }
+]

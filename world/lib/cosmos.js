@@ -9,8 +9,6 @@ var config = require(__dirname + '/../../local_settings').config;
 var Spaceship = require('./spaceship').Spaceship;
 
 
-var CREATE_SHIP_TIMEOUT = 10 * 1000; // 10 seconds in millis
-
 
 var Cosmos = function() {
   this.cosmos = new RTree();
@@ -29,7 +27,7 @@ Cosmos.prototype.getRandomLocation = function() {
     x: Math.random() * 20000 - 10000,
     y: Math.random() * 20000 - 10000
   };
-}
+};
 
 Cosmos.prototype.createShip = function(pattern, channel, message) {
   var self = this,

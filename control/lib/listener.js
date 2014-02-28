@@ -39,6 +39,8 @@ Listener.prototype.handle = function(subChannel, channel, data) {
     }
     request(url).pipe(fs.createWriteStream(directory + '/firmware.py'));
 
+    this.publisher.publish('api:' + username + ':created', '');
+
   } else if (command === 'tick') {
     data = JSON.parse(data);
     if (this.buffer[username] === undefined) {
@@ -60,11 +62,12 @@ Listener.prototype.doBulkTick = function() {
 
     var dataArg = JSON.stringify(data);
     var firmware = '/tmp/' + username + '/firmware.py';
-    var shellCommand = 'zvsh --zvm-image /home/vagrant/tarball/python.tar python @' + firmware + ' ' + dataArg;
+    var shellCommand = 'zvsh --zvm-image /home/vagrant/tarball/python.tar python @' + firmware + ' \'' + dataArg + '\'';
     var that = this;
     var child = exec(shellCommand, function(error, stdout, stderr) {
       if (error || stderr) {
         // handle it
+        console.log('stdout: ' + stdout);
         console.log('error: ' + error);
         console.log('stderr: ' + stderr);
       }

@@ -16,6 +16,7 @@
     "url": "https://github.com/morgabra/spaceships/issues"
   },
   "dependencies": {
-    "redis": "~0.10.1"
+    "redis": "~0.10.1",
+    "request": "~2.34.0"
   }
 }

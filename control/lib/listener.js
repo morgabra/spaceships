@@ -1,4 +1,6 @@
+var fs = require('fs');
 var redis = require('redis');
+var request = require('request');
 
 var Listener = function() {
   this.redis = redis.createClient();
@@ -14,17 +16,26 @@ Listener.prototype.listen = function() {
 
 Listener.prototype.handle = function(subChannel, channel, data) {
   console.log(channel + ': ' + data);
+  // channel should be api:githubid:command
   var pieces = channel.split(':');
   if (pieces.length !== 3) {
     // bail
     return;
   }
 
-  command = pieces[2];
+  var username = pieces[1];
+  var command = pieces[2];
 
   if (command === 'create') {
-    var message = JSON.parse(data);
     // download python file etc
+    var url = data;
+    var directory = '/tmp/' + username;
+    try {
+      fs.mkdirSync(directory);
+    } catch (e) {
+      // already exists
+    }
+    request(url).pipe(fs.createWriteStream(directory + '/firmware.py'));
   } else if (command === 'tick') {
     // run a function
     // zvsh --zvm-image python.tar python @something.py args moreargs

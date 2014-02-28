@@ -125,7 +125,6 @@ $( document ).ready( function () {
 
     socket.on('data', function (data) {
         // TODO(larsbutler): need to get a list of stuff here
-        console.log(data.data);
         if (data.data == "Connected!") {
             // Cool, we're connected
             // But this isn't json

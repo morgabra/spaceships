@@ -56,7 +56,7 @@ Spaceship.prototype.update = function(event) {
 };
 
 Spaceship.prototype.getSpeed = function() {
-  return this.throttle / 5000;
+  return this.throttle / 100;
 };
 
 Spaceship.prototype.create = function(callback) {

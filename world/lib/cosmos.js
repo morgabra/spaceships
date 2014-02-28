@@ -125,7 +125,7 @@ Cosmos.prototype.tick = function(callback) {
       self.lastTicked = Date.now();
 
       if (spaceObj.type === 'spaceship') {
-        chan = ['tick', spaceObj.name].join(':');
+        chan = ['api', spaceObj.name, 'tick'].join(':');
         box = spaceObj.getViewBox();
         self.redisPubClient.publish(
           chan,

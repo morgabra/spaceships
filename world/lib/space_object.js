@@ -2,7 +2,7 @@ var util = require('util');
 var uuid = require('node-uuid');
 
 
-var SpaceObject = function(x, y, width, height) {
+var SpaceObject = function(user, x, y, width, height) {
   this.x = x;
   this.y = y;
   this.width = width;

@@ -8,7 +8,6 @@ var SpaceObject = function(x, y, width, height) {
   this.width = width;
   this.height = height;
   this.id = uuid.v4();
-  this.type = 'spaceobject';
   this.lastTicked = 0;
 };
 

@@ -17,9 +17,10 @@ var Cosmos = function() {
   this.lastTicked = 0;
 
   this.redisClient = redis.createClient(config.redis.port, config.redis.host);
+  this.redisPubClient = redis.createClient(config.redis.port, config.redis.host);
 
   this.redisClient.on('pmessage', this.redisEvent.bind(this));
-  this.redisClient.psubscribe(config.redis.prefix + 'api:*:*');
+  this.redisClient.psubscribe('api:*:*');
 
   EventEmitter.call(this);
 };
@@ -42,6 +43,8 @@ Cosmos.prototype.redisEvent = function(pattern, channel, message) {
     self.createShip(user);
   } else if (eventType === 'update') {
     self.ships[user].update(message);
+  } else {
+    console.log(message);
   }
 };
 
@@ -95,6 +98,8 @@ Cosmos.prototype.tick = function(callback) {
         self.updateObjectLocation(spaceObj, callback);
       }
     ], function(err) {
+      var chan;
+
       if (err) {
         self.emit('error', err);
         callback();
@@ -104,6 +109,9 @@ Cosmos.prototype.tick = function(callback) {
       console.log('Finished tick');
 
       self.lastTicked = Date.now();
+
+      chan = ['tick', spaceObj.name].join(':');
+      self.redisPubClient.publish(chan, JSON.stringify(spaceObj));
 
       self.emit('tick', self.lastTicked);
       callback();

@@ -9,10 +9,11 @@ var tick = function() {
   var timeoutId;
   console.log('TICKING');
   console.dir(c.ships);
-  timeoutId = setTimeout(c.tick.bind(c, tick), 100);
+  timeoutId = setTimeout(c.tick.bind(c, tick), 1000);
 };
 
-async.each(['jirwin', 'larsbutler', 'morgabra'], function(user, callback) {
+
+async.timesSeries(100, function(user, callback) {
   c.createShip(user, callback);
 }, function() {
   c.tick(tick);

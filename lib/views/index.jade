@@ -19,8 +19,6 @@ html(lang="en")
     style
         #gamecanvas {
             background-color: #000000;
-            width: 640px;
-            height: 480px;
         }
 
   body
@@ -46,7 +44,7 @@ html(lang="en")
       .page-header
         h1= "Ship Status"
         #framerate-monitor
-        canvas#gamecanvas
+        canvas#gamecanvas(width=640, height=480)
         p= "Status of the Ship?"
 
     #shipstatus.container

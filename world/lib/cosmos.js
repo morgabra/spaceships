@@ -7,7 +7,7 @@ var RTree = require('rtree');
 
 var config = require('../../local_settings');
 var Spaceship = require('./spaceship').Spaceship;
-
+var Planet = require('./planet').Planet;
 
 
 var Cosmos = function() {
@@ -33,6 +33,19 @@ Cosmos.prototype.getRandomLocation = function() {
   };
 };
 
+Cosmos.prototype.createPlanet = function(callback) {
+  var self = this,
+      location = this.getRandomLocation(),
+      radius = Math.random() * 25 + 1,
+      planet;
+
+  planet = new Planet(location.x, location.y, radius);
+  self.insert(planet, function() {
+    self.emit('created-planet', planet);
+    callback();
+  });
+};
+
 Cosmos.prototype.redisEvent = function(pattern, channel, message) {
   var self = this,
       chanInfo = channel.split(':'),
@@ -40,8 +53,10 @@ Cosmos.prototype.redisEvent = function(pattern, channel, message) {
       user = chanInfo[1];
 
   if (eventType === 'created') {
-    self.createShip(user);
-  } else if (eventType === 'update') {
+    self.createShip(user, function() {
+      console.log('Created ship for', user);
+    });
+  } else if (eventType === 'result') {
     self.ships[user].update(message);
   }
 };
@@ -91,7 +106,11 @@ Cosmos.prototype.tick = function(callback) {
 
       // Update world location of each space object
       function updateSpaceObjInCosmos(callback) {
-        self.updateObjectLocation(spaceObj, callback);
+        if (spaceObj.type === 'spaceship') {
+          self.updateObjectLocation(spaceObj, callback);
+        } else {
+          callback();
+        }
       }
     ], function(err) {
       var chan,
@@ -105,12 +124,14 @@ Cosmos.prototype.tick = function(callback) {
 
       self.lastTicked = Date.now();
 
-      chan = ['tick', spaceObj.name].join(':');
-      box = spaceObj.getViewBox();
-      self.redisPubClient.publish(
-        chan,
-        JSON.stringify(self.search(box.x, box.y, box.w, box.h))
-      );
+      if (spaceObj.type === 'spaceship') {
+        chan = ['api', spaceObj.name, 'tick'].join(':');
+        box = spaceObj.getViewBox();
+        self.redisPubClient.publish(
+          chan,
+          JSON.stringify(self.search(box.x, box.y, box.w, box.h))
+        );
+      }
 
       self.emit('tick', self.lastTicked);
       callback();

@@ -62,6 +62,9 @@ Listener.prototype.doBulkTick = function() {
 
     var dataArg = JSON.stringify(data);
     var firmware = '/tmp/' + username + '/firmware.py';
+    if (!fs.existsSync(firmware)) {
+      continue;
+    }
     var shellCommand = 'zvsh --zvm-image /home/vagrant/tarball/python.tar python @' + firmware + ' \'' + dataArg + '\'';
     var that = this;
     var child = exec(shellCommand, function(error, stdout, stderr) {

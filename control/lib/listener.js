@@ -6,6 +6,8 @@ var request = require('request');
 var Listener = function() {
   this.subscriber = redis.createClient();
   this.publisher = redis.createClient();
+  this.buffer = {};
+  setInterval(this.doBulkTick.bind(this), 1000);
 };
 
 Listener.prototype.listen = function() {
@@ -38,11 +40,27 @@ Listener.prototype.handle = function(subChannel, channel, data) {
     request(url).pipe(fs.createWriteStream(directory + '/firmware.py'));
 
   } else if (command === 'tick') {
-    // run a function
-    // zvsh --zvm-image python.tar python @something.py args moreargs
-    // then push stdout back to redis
+    data = JSON.parse(data);
+    if (this.buffer[username] === undefined) {
+      this.buffer[username] = [];
+    }
+    this.buffer[username].push(data);
+  }
+};
+
+Listener.prototype.doBulkTick = function() {
+  var usernames = Object.keys(this.buffer);
+  for (var i = 0; i < usernames.length; i++) {
+    var username = usernames[i];
+    var data = this.buffer[username];
+    if (data.length === 0) {
+      continue;
+    }
+    this.buffer[username] = [];
+
+    var dataArg = JSON.stringify(data);
     var firmware = '/tmp/' + username + '/firmware.py';
-    var shellCommand = 'zvsh --zvm-image /home/vagrant/tarball/python.tar python @' + firmware + ' ' + data;
+    var shellCommand = 'zvsh --zvm-image /home/vagrant/tarball/python.tar python @' + firmware + ' ' + dataArg;
     var that = this;
     var child = exec(shellCommand, function(error, stdout, stderr) {
       if (error) {
